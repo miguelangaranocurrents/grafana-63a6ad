@@ -549,12 +549,14 @@ export function TableNested(props: TableNGProps & { nestedFramesField: Field<Dat
               isExpanded={expandedRows.has(stableKey)}
               onCellExpand={() => {
                 setExpandedRows((er) => {
-                  if (er.has(stableKey)) {
-                    er.delete(stableKey);
+                  // Copy rather than mutate the previous state so the updater stays pure (safe under StrictMode re-invocation)
+                  const next = new Set(er);
+                  if (next.has(stableKey)) {
+                    next.delete(stableKey);
                   } else {
-                    er.add(stableKey);
+                    next.add(stableKey);
                   }
-                  return new Set(er);
+                  return next;
                 });
               }}
             />
